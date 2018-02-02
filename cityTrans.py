@@ -33,5 +33,18 @@ def get_data_by_sheet_name(file_name, col_name_index = 0, sheet_name = "sheet1")
 	return col_names
 # end get
 
+# get the API from the Gaode Map
+
+# end get 
+
+# get the API from the 12306 website
+
+# end get 
+
+# get the result from the website and write the result to the excel file
+
+# end get 
+
+
 col_names = get_data_by_sheet_name("城市矩阵.xlsx", 0, "汽车")
 print(col_names) 

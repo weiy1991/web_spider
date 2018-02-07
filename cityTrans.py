@@ -195,13 +195,45 @@ for i in range(len(col_names)-1):
 
 # wirte the time result to the excel file
 
+import xlwt
+
 print("time_cost: ", time_cost)
 
+def open_excel_w(file_name):
+	data = xlwt.open_workbook(file_name)
+	return data
+
+def write_result_to_excel_file(file_name, sheet_name, index, col, value):	
+	data = open_excel_w(file_name)
+	table = data.sheet_by_name(sheet_name)
+	table.write(0, 0, time_cost[0])
+
+#write_result_to_excel_file('城市矩阵.xlsx', '汽车', 0, 0, 'test')
+
+
+def write_excel(sheet_name):
+	wbk = xlwt.Workbook()
+	sheet = wbk.add_sheet(sheet_name)
+	for i in range(len(col_names)-1):
+		if i==0:
+			continue
+		if i>5:
+			break
+		sheet.write(i, 0, col_names[i])
+		for j in range(len(col_names)-1):
+			if j==0:
+				sheet.write(0, i, col_names[i])
+				continue
+			if j>5:
+				break
+			sheet.write(i,j,time_cost[col_names[i] + '-' + col_names[j]])#第0行第一列写入内容
+	wbk.save('result.xls')
+write_excel('cars')
 # end write
 			
 
 
 
-print(dict_city)
-#timeXML = getDrivingPath_page(1, 2)
-#print(timeXML)
+#print(dict_city)
+#timexml = getdrivingpath_page(1, 2)
+#print(timexml)

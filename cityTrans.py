@@ -64,6 +64,17 @@ location_encode = "http://restapi.amap.com/v3/geocode/geo"
 poi_search_url = "http://restapi.amap.com/v3/place/text"
 poi_boundary_url = "https://ditu.amap.com/detail/get/detail"
 
+# key dic
+map_key = ['9104487784107981ee3310e4fe08591d',
+	   '6c6d2a7c80d63206a1ecacacee2a76c5',
+	   '3359c7e74cd6cb20ee63ebcf5eb3ae10',
+	   '93d2d194c987f64e8ca39ded9ed03f76',
+	   'c68a245f0eb6c0582530ea06bd7a0ea1',
+	   'ea47439f693e34ca304b007b1e621838',
+	   '7f19af0af77e1097767ad072bd00cfbe']
+# end key 
+
+
 #根据城市名称和分类关键字获取poi数据
 def getpois(cityname, keywords):
     i = 1
@@ -94,8 +105,9 @@ def getpoi_page(cityname, keywords, page):
     return data
 
 #单页获取pois
-def getDrivingPath_page(origin, destination):
-    req_url = driving_path_planning + "?key=" + amap_web_key + '&origin=104.679114,31.467450' + '&destination=108.393135,31.160711' + '&extensions=base&output=jason&strategy=0'
+def getDrivingPath_page(origin, destination, web_key):
+    req_url = driving_path_planning + "?key=" + web_key + '&origin=' + origin  + '&destination=' + destination + '&extensions=base&output=jason&strategy=0'
+    print(req_url)
     data = ''
     with request.urlopen(req_url) as f:
         data = f.read()
@@ -124,6 +136,7 @@ location = getLocation("四川省绵阳市")
 print(location)
 
 
+# get the location of each place
 dict_city = {}
 for i in range(len(col_names)-1):
 	if i > 0:
@@ -134,6 +147,59 @@ for i in range(len(col_names)-1):
 		print(location_dic)
 
 		dict_city[col_names[i]] = location_dic
+
+# get the path planning time for the two places
+# encode the order of the city
+time_cost = {}
+# end encode
+
+count = 1
+count_web_key = 0
+cur_web_key = map_key[0]
+for i in range(len(col_names)-1):
+	# get the first location of the place
+	if i == 0:
+		continue
+	if i > 5:
+ 		break
+	location_first = dict_city[col_names[i]]
+	for j in range(len(col_names)-1):
+		if j ==0:
+			continue
+
+		if j > 5:
+			break
+		
+		count += 1
+		# check the key value
+		# cur_web_key = ''
+		if count > 1900:
+			count_web_key += 1
+			cur_web_key = map_key[count_web_key]
+			#count_web_key += 1
+			count = 1 
+		# end check
+
+		# get the second location of the  place
+		location_second = dict_city[col_names[j]]
+		# get the time cost of the two places
+		data = getDrivingPath_page(location_first, location_second, cur_web_key)
+		# print(data)
+		data_dic = eval(data)
+		#time_result = data_dic['route']
+		#print("time_result:", time_result)
+		time_result = data_dic['route']['paths'][0]['duration']
+		print("time_result:", time_result)
+
+		time_cost[col_names[i] + '-' + col_names[j]] = time_result
+
+# wirte the time result to the excel file
+
+print("time_cost: ", time_cost)
+
+# end write
+			
+
 
 
 print(dict_city)

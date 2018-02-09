@@ -46,7 +46,7 @@ def get_data_by_sheet_name(file_name, col_name_index = 0, sheet_name = "sheet1")
 # end get
 
 
-col_names = get_data_by_sheet_name("城市矩阵.xlsx", 0, "汽车")
+col_names = get_data_by_sheet_name("城市矩阵副本.xlsx", 0, "汽车")
 print(col_names[0])
 print(col_names[1])
 print(col_names[2])
@@ -128,17 +128,17 @@ def getLocation(placeName):
 
 
 #获取城市分类数据
-cityname = "珠海"
-classfiled = "大学"
+#cityname = "珠海"
+#classfiled = "大学"
 #pois = getpois(cityname, classfiled)
 
-location = getLocation("四川省绵阳市")
-print(location)
+#location = getLocation("四川省绵阳市")
+#print(location)
 
 
 # get the location of each place
 dict_city = {}
-for i in range(len(col_names)-1):
+for i in range(len(col_names)):
 	if i > 0:
 		print(col_names[i])
 		location_result = eval(getLocation(col_names[i]))
@@ -156,19 +156,19 @@ time_cost = {}
 count = 1
 count_web_key = 0
 cur_web_key = map_key[0]
-for i in range(len(col_names)-1):
+for i in range(len(col_names)):
 	# get the first location of the place
 	if i == 0:
 		continue
-	if i > 5:
- 		break
+	#if i > 5:
+ 	#	break
 	location_first = dict_city[col_names[i]]
-	for j in range(len(col_names)-1):
+	for j in range(len(col_names)):
 		if j ==0:
 			continue
 
-		if j > 5:
-			break
+		#if j > 5:
+		#	break
 		
 		count += 1
 		# check the key value
@@ -214,18 +214,18 @@ def write_result_to_excel_file(file_name, sheet_name, index, col, value):
 def write_excel(sheet_name):
 	wbk = xlwt.Workbook()
 	sheet = wbk.add_sheet(sheet_name)
-	for i in range(len(col_names)-1):
+	for i in range(len(col_names)):
 		if i==0:
 			continue
-		if i>5:
-			break
+		#if i>5:
+		#	break
 		sheet.write(i, 0, col_names[i])
-		for j in range(len(col_names)-1):
+		for j in range(len(col_names)):
 			if j==0:
 				sheet.write(0, i, col_names[i])
 				continue
-			if j>5:
-				break
+			#if j>5:
+			#	break
 			sheet.write(i,j,time_cost[col_names[i] + '-' + col_names[j]])#第0行第一列写入内容
 	wbk.save('result.xls')
 write_excel('cars')

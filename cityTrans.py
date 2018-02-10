@@ -31,19 +31,6 @@ def get_data_by_sheet_name(file_name, col_name_index = 0, sheet_name = "sheet1")
 	#			app[col_names[i]] = row[i]
 	#		list.append(app)
 	return col_names
-# end get
-
-# get the API from the Gaode Map
-
-# end get
-
-# get the API from the 12306 website
-
-# end get
-
-# get the result from the website and write the result to the excel file
-
-# end get
 
 
 col_names = get_data_by_sheet_name("城市矩阵副本.xlsx", 0, "汽车")
@@ -75,36 +62,9 @@ map_key = ['9104487784107981ee3310e4fe08591d',
 # end key 
 
 
-#根据城市名称和分类关键字获取poi数据
-def getpois(cityname, keywords):
-    i = 1
-    poilist = []
-    while True : #使用while循环不断分页获取数据
-       result = getpoi_page(cityname, keywords, i)
-       result = json.loads(result)  # 将字符串转换为json
-       if result['count'] == '0':
-           break
-       hand(poilist, result)
-       i = i + 1
-    return poilist
 
-#将返回的poi数据装入集合返回
-def hand(poilist, result):
-    #result = json.loads(result)  # 将字符串转换为json
-    pois = result['pois']
-    for i in range(len(pois)) :
-        poilist.append(pois[i])
 
-#单页获取pois
-def getpoi_page(cityname, keywords, page):
-    req_url = poi_search_url + "?key=" + amap_web_key + '&extensions=all&keywords=' + quote(keywords) + '&city=' + quote(cityname) + '&citylimit=true' + '&offset=25' + '&page=' + str(page) + '&output=json'
-    data = ''
-    with request.urlopen(req_url) as f:
-        data = f.read()
-        data = data.decode('utf-8')
-    return data
-
-#单页获取pois
+# get the path planning information between the two cities
 def getDrivingPath_page(origin, destination, web_key):
     req_url = driving_path_planning + "?key=" + web_key + '&origin=' + origin  + '&destination=' + destination + '&extensions=base&output=jason&strategy=0'
     print(req_url)
@@ -113,6 +73,7 @@ def getDrivingPath_page(origin, destination, web_key):
         data = f.read()
         data = data.decode('utf-8')
     return data
+# end get
 
 # get the location of the place 
 def getLocation(placeName):
@@ -125,15 +86,7 @@ def getLocation(placeName):
 		data = f.read()
 		data = data.decode('utf-8')
 	return data
-
-
-#获取城市分类数据
-#cityname = "珠海"
-#classfiled = "大学"
-#pois = getpois(cityname, classfiled)
-
-#location = getLocation("四川省绵阳市")
-#print(location)
+# end get 
 
 
 # get the location of each place
@@ -232,8 +185,3 @@ write_excel('cars')
 # end write
 			
 
-
-
-#print(dict_city)
-#timexml = getdrivingpath_page(1, 2)
-#print(timexml)

@@ -44,12 +44,12 @@ import json
 import xlwt
 
 # for driving path planning
+# API Key: 10000 for per day to get the location of the place
+# API Key: 2000 for per day to get the path planning information between the two places. Thus, we apply seven key for the path planning infromation, and only one key for the location information.
+
 amap_web_key = 'cdf8a2cb96be23b86cc5323828aafe9d'  # API Key from the Gaode
 driving_path_planning = "http://restapi.amap.com/v3/direction/driving"
 location_encode = "http://restapi.amap.com/v3/geocode/geo"
-
-poi_search_url = "http://restapi.amap.com/v3/place/text"
-poi_boundary_url = "https://ditu.amap.com/detail/get/detail"
 
 # key dic
 map_key = ['9104487784107981ee3310e4fe08591d',
@@ -60,9 +60,6 @@ map_key = ['9104487784107981ee3310e4fe08591d',
 	   'ea47439f693e34ca304b007b1e621838',
 	   '7f19af0af77e1097767ad072bd00cfbe']
 # end key 
-
-
-
 
 # get the path planning information between the two cities
 def getDrivingPath_page(origin, destination, web_key):

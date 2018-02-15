@@ -19,18 +19,21 @@ def get_data_by_sheet_name(file_name, col_name_index = 0, sheet_name = "sheet1")
 	data = open_excel(file_name)
 	table = data.sheet_by_name(sheet_name)
 	nrows = table.nrows
+	ncols = table.ncols
 	#print("nrows:", nrows)
 	col_names = table.row_values(col_name_index)
+	row_names = table.col_values(col_name_index)
+	#row_names = col_names
 	#print("col_names:",col_names)
-	#list = []
-	#for rownum in range(1, nrows):
-	#	row = table.row_values(rownum)
-	#	if row:
-	#		app = {}
-	#		for i in range(len(col_names)):
-	#			app[col_names[i]] = row[i]
-	#		list.append(app)
-	return col_names
+	list = []
+	for rownum in range(1, nrows):
+		row = table.row_values(rownum)
+		if row:
+			app = {}
+			for i in range(len(col_names)):
+				app[col_names[i]] = row[i]
+			list.append(app)
+	return col_names, row_names
 
 print('please input the sheet name:')
 sheet_name = input("sheet name: ")
@@ -41,11 +44,19 @@ result_excel_name = input('input the result excel name: ')
 
 
 #col_names = get_data_by_sheet_name("城市矩阵.xlsx", 0, "汽车")
-col_names = get_data_by_sheet_name("城市矩阵.xlsx", 0, sheet_name )
+col_names, row_names = get_data_by_sheet_name("城市矩阵split.xlsx", 0, sheet_name )
 
-print(col_names[0])
-print(col_names[1])
-print(col_names[2])
+#print(col_names[0])
+#print(col_names[1])
+#print(col_names[2])
+
+#print(row_names[0])
+#print(row_names[1])
+#print(row_names[2])
+
+print('col_names:', col_names)
+print('row_names:', row_names)
+
 
 from urllib.parse import quote
 from urllib import request
@@ -99,15 +110,26 @@ def getLocation(placeName):
 
 # get the location of each place
 dict_city = {}
+dict_city_row = {}
 for i in range(len(col_names)):
 	if i > 0:
-		print(col_names[i])
+		print("col_names:",col_names[i])
 		location_result = eval(getLocation(col_names[i]))
 		#print(type(location_json))
 		location_dic = location_result['geocodes'][0]['location']
 		print(location_dic)
 
 		dict_city[col_names[i]] = location_dic
+
+for i in range(len(row_names)):
+        if i > 0:
+                print("row_names:",row_names[i])
+                location_result = eval(getLocation(row_names[i]))
+                #print(type(location_json))
+                location_dic = location_result['geocodes'][0]['location']
+                print(location_dic)
+
+                dict_city_row[row_names[i]] = location_dic
 
 # get the path planning time for the two places
 # encode the order of the city
@@ -125,7 +147,7 @@ for i in range(len(col_names)):
 	#if i > 5:
  	#	break
 	location_first = dict_city[col_names[i]]
-	for j in range(len(col_names)):
+	for j in range(len(row_names)):
 		if j ==0:
 			continue
 
@@ -144,7 +166,7 @@ for i in range(len(col_names)):
 		
 		print("count:", count)
 		# get the second location of the  place
-		location_second = dict_city[col_names[j]]
+		location_second = dict_city_row[row_names[j]]
 		# get the time cost of the two places
 		data = getDrivingPath_page(location_first, location_second, cur_web_key)
 		# print(data)
@@ -154,7 +176,7 @@ for i in range(len(col_names)):
 		time_result = data_dic['route']['paths'][0]['duration']
 		print("time_result:", time_result)
 
-		time_cost[col_names[i] + '-' + col_names[j]] = time_result
+		time_cost[row_names[j] + '-' + col_names[i]] = time_result
 
 # wirte the time result to the excel file
 
@@ -177,22 +199,25 @@ def write_result_to_excel_file(file_name, sheet_name, index, col, value):
 def write_excel(sheet_name):
 	wbk = xlwt.Workbook()
 	sheet = wbk.add_sheet(sheet_name)
-	for i in range(len(col_names)):
+	for i in range(len(row_names)):
 		if i==0:
+			for ii in range(len(col_names)):
+				if ii==0:
+					continue
+				sheet.write(0, ii, col_names[ii])
 			continue
 		#if i>5:
 		#	break
-		sheet.write(i, 0, col_names[i])
+		sheet.write(i, 0, row_names[i])
 		for j in range(len(col_names)):
 			if j==0:
-				sheet.write(0, i, col_names[i])
+				#sheet.write(0, i, col_names[j])
 				continue
 			#if j>5:
 			#	break
-			sheet.write(i,j,time_cost[col_names[i] + '-' + col_names[j]])#第0行第一列写入内容
+			sheet.write(i,j,time_cost[row_names[i] + '-' + col_names[j]])#第0行第一列写入内容
 	wbk.save('result.xls')
 # write_excel('cars')			
 write_excel(result_excel_name)
 
 # end write
-

@@ -32,8 +32,17 @@ def get_data_by_sheet_name(file_name, col_name_index = 0, sheet_name = "sheet1")
 	#		list.append(app)
 	return col_names
 
+print('please input the sheet name:')
+sheet_name = input("sheet name: ")
+print('please input the key number')
+key_number = input("key NO. : ")
+print('please input the result excel name: ')
+result_excel_name = input('input the result excel name: ')
 
-col_names = get_data_by_sheet_name("城市矩阵副本.xlsx", 0, "汽车")
+
+#col_names = get_data_by_sheet_name("城市矩阵.xlsx", 0, "汽车")
+col_names = get_data_by_sheet_name("城市矩阵.xlsx", 0, sheet_name )
+
 print(col_names[0])
 print(col_names[1])
 print(col_names[2])
@@ -58,7 +67,9 @@ map_key = ['9104487784107981ee3310e4fe08591d',
 	   '93d2d194c987f64e8ca39ded9ed03f76',
 	   'c68a245f0eb6c0582530ea06bd7a0ea1',
 	   'ea47439f693e34ca304b007b1e621838',
-	   '7f19af0af77e1097767ad072bd00cfbe']
+	   '7f19af0af77e1097767ad072bd00cfbe',
+	   'cdf8a2cb96be23b86cc5323828aafe9d']  # 
+
 # end key 
 
 # get the path planning information between the two cities
@@ -104,8 +115,9 @@ time_cost = {}
 # end encode
 
 count = 1
-count_web_key = 0
-cur_web_key = map_key[0]
+count_web_key = 0+1
+#cur_web_key = map_key[0+1]
+cur_web_key = map_key[int(key_number)]
 for i in range(len(col_names)):
 	# get the first location of the place
 	if i == 0:
@@ -129,7 +141,8 @@ for i in range(len(col_names)):
 			#count_web_key += 1
 			count = 1 
 		# end check
-
+		
+		print("count:", count)
 		# get the second location of the  place
 		location_second = dict_city[col_names[j]]
 		# get the time cost of the two places
@@ -178,7 +191,8 @@ def write_excel(sheet_name):
 			#	break
 			sheet.write(i,j,time_cost[col_names[i] + '-' + col_names[j]])#第0行第一列写入内容
 	wbk.save('result.xls')
-write_excel('cars')
+# write_excel('cars')			
+write_excel(result_excel_name)
+
 # end write
-			
 

@@ -216,7 +216,9 @@ def write_excel(sheet_name):
 			#if j>5:
 			#	break
 			sheet.write(i,j,time_cost[row_names[i] + '-' + col_names[j]])#第0行第一列写入内容
-	wbk.save('result.xls')
+	result_excel_name = sheet_name + '.xls'
+	wbk.save(result_excel_name)
+	#wbk.save('result.xls')
 # write_excel('cars')			
 write_excel(result_excel_name)
 
